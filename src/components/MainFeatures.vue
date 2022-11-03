@@ -13,13 +13,13 @@
         <li>
           <div class="features-list__item">
             <h4>Обшая Сумма</h4>
-            <p>{{ allSum }} UZS</p>
+            <p>{{ allRealSum }} UZS</p>
           </div>
         </li>
         <li>
           <div class="features-list__item">
             <h5>Скидка</h5>
-            <p>90 UZS</p>
+            <p>{{ allDiscountedSum }} UZS</p>
           </div>
         </li>
         <li>
@@ -42,7 +42,7 @@
         </li>
       </ul>
       <div class="button-list">
-        <el-button class="el-button" @click="discountModal(true)">Обшая скидка</el-button>
+        <el-button class="el-button" @click="discountModal">Обшая скидка</el-button>
         <el-dialog
         title="Обшая Скидка"
         class="all-discount"
@@ -84,21 +84,20 @@ export default {
     }
   },
   methods:{
-    discountModal(bool){
+    discountModal(){
       this.discModal = !this.discModal
-      if(bool === true){
-        this.totalAllCost = this.allSum
-      }
     },
     confirmAllDiscount(){
-      store.state("product/allDiscount", this.computAllDiscount);
       this.discModal = !this.discModal
+      store.dispatch("product/changeAllSum", this.computAllDiscount)
     }
   },
   computed:{
     ...mapGetters({
       allSum: "product/allSum",
-      elementCount: "product/elementCount"
+      elementCount: "product/elementCount",
+      allRealSum:"product/allRealSum",
+      allDiscountedSum:"product/allDiscountedSum"
     }),
     basketProducts(){
       return store.state.product.basket
@@ -106,8 +105,11 @@ export default {
     cashier(){
       return JSON.parse(localStorage.getItem("user")).name
     },
+    minudDiscount(){
+      return this.allSum - this.computAllDiscount 
+    },
     computAllDiscount(){
-      return this.totalAllCost * ( (100 - this.allDiscount ) / 100) 
+        return this.allSum * ( (100 - this.allDiscount ) / 100) 
     }
   }
 }

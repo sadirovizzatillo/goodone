@@ -22,6 +22,7 @@
 
 <script>
 import store from '@/store';
+import router from '@/router';
 export default {
     name:"RegisterView",
     data() {
@@ -52,6 +53,7 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     store.dispatch("auth/register", this.ruleForm)
+                    router.push( { name:"Login" } )
                 } else {
                     return false;
                 }

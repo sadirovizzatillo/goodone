@@ -5,12 +5,25 @@ export default {
         products:[],
         filteredProducts:[],
         basket:[],
-        isItem:false
+        isItem:false,
+        discountSum:0
     },
     getters:{
         allSum(state) {
             const result = state.basket.reduce((total, value) => total += value.cost, 0)
             return result
+        },
+        allDiscountedSum(state) {
+            const result = state.discountSum
+            return result
+        },
+        allRealSum(state, getters) {
+            const result = getters.allSum - state.discountSum
+            if(state.discountSum > 0){
+                return result
+            }else{
+                return getters.allSum
+            }
         },
         elementCount(state){
             const elements = state.basket.filter((item, index) => state.basket.indexOf(item) === index);
@@ -18,6 +31,9 @@ export default {
         },
     },
     mutations:{
+        CHANGE_ALL_SUM(state, payload){
+            state.discountSum = payload
+        },
         ADD_BASKET_PRODUCT(state, payload){
             state.isItem = false
             state.basket.forEach(item => {
@@ -60,10 +76,6 @@ export default {
                 }
             })
         },
-        ALL_DISCOUNT(state, payload){
-            console.log(state)
-            payload.oldSum = payload.payload
-        },
         DECREMENT_QUANTITY(state, payload){
             state.basket.forEach(item => {
                 if(item._id === payload._id){
@@ -75,6 +87,9 @@ export default {
         }
     },
     actions:{
+        changeAllSum(_, payload){
+            _.commit("CHANGE_ALL_SUM", payload)
+        },
         setDiscount(_, payload){
             _.commit("SET_DISCOUNT", payload)
         },
@@ -97,7 +112,7 @@ export default {
             }
         },
         allDiscount(_, payload){
-            _.commit("ALL_DISCOUNT", { oldSum:_.getters.allSum, payload:payload})
+            _.getters.allSum = payload
         },
         async clearData(_){
             _.commit("CLEAR_DATA")

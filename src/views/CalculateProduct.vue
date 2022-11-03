@@ -36,11 +36,11 @@
         <ul class="all-sum__list">
           <li>
             <h5>Обшая Сумма</h5>
-            <p>{{ allSum }} UZS</p>
+            <p>{{ allRealSum }} UZS</p>
           </li>
           <li>
             <h5>Скидка</h5>
-            <p>90 UZS</p>
+            <p>{{ allDiscountedSum }} UZS</p>
           </li>
           <li>
             <h5>Елементы</h5>
@@ -138,8 +138,9 @@ export default {
   },
   computed:{
     ...mapGetters({
-      allSum: "product/allSum",
-      elementCount: "product/elementCount"
+      elementCount: "product/elementCount",
+      allRealSum:"product/allRealSum",
+      allDiscountedSum:"product/allDiscountedSum"
     }),
   },
   methods:{
@@ -154,7 +155,7 @@ export default {
     },
     payModalOpen(){
       this.payModal = !this.payModal
-      let moreSum =  Number(this.addSum) - this.allSum 
+      let moreSum =  Number(this.addSum) - this.allRealSum 
       let moreFakeSum = moreSum.toString().replace(/(?!^)(?=(?:\d{3})+(?:\.|$))/gm, ' ');
       this.showMoney = moreFakeSum
     },
