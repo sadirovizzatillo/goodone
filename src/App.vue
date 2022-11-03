@@ -1,12 +1,35 @@
 <template>
-  <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
-  </div>
+  <component :is="layout">
+    <router-view :key="$route.fullPath"/>
+  </component>
 </template>
+
+<script>
+import AuthLayout from './layouts/AuthLayout.vue';
+import MainLayout from './layouts/MainLayout.vue';
+import router from './router';
+export default {
+  name:"App",
+  data(){
+    return{
+      route:this.$route
+    }
+  },
+  computed:{
+    layout(){
+      var result = null
+      if(router.currentRoute.meta.layout.name === "AuthLayout"){
+        result =  AuthLayout
+      }
+      if(router.currentRoute.meta.layout.name === "MainLayout"){
+        result =   MainLayout
+      }
+      
+      return result
+    }
+  },
+}
+</script>
 
 <style>
 #app {
